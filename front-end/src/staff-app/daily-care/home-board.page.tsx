@@ -73,16 +73,20 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
   const { onItemClick } = props
 
   function handleMenuPopup(targetElement: any){
-    // some sorting has been done via onClick
+    // some sorting has been done via onClick on menu-options
     if(!targetElement){
       setSortingDirection(!sortingDirectionAscending)
     }
-    setShowSortingPopup(targetElement)
+    // user click anywhere outside the menu to close the popup
+    else if(targetElement === 'closePopup'){
+      setShowSortingPopup(null)
+    }
+    else setShowSortingPopup(targetElement)
   }
 
   return (
-    <S.ToolbarContainer>
-      <S.Name onClick={() => onItemClick("sort")}>
+    <S.ToolbarContainer onClick={(e: React.MouseEvent<any>) => handleMenuPopup('closePopup')}>
+      <S.Name>
         <div onMouseEnter={(e: React.MouseEvent<any>) => handleMenuPopup(e.currentTarget)}>
           {
             sortingDirectionAscending ? <ArrowDownwardIcon/> :  <ArrowUpwardIcon/>
