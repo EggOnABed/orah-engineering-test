@@ -11,6 +11,7 @@ interface Options {
 }
 export function useApi<ReturnType = {}>({ url, initialLoadState = "loading" }: Options) {
   const [state, dispatch] = useReducer(stateReducer<ReturnType>(), { data: undefined, loadState: initialLoadState, error: undefined })
+  
   const callApi = useCallback(
     async (params?: object) => {
       dispatch({ type: "loading" })
