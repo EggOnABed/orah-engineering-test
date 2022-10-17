@@ -67,12 +67,13 @@ type ToolbarAction = "roll" | "sort"
 interface ToolbarProps {
   onItemClick: (action: ToolbarAction, value?: string) => void
 }
+
 const Toolbar: React.FC<ToolbarProps> = (props) => {
   const [showSortingPopup, setShowSortingPopup] = useState(null)
   const [sortingDirectionAscending, setSortingDirection] = useState(true)
   const { onItemClick } = props
 
-  function handleMenuPopup(targetElement: any){
+  function handleMenuPopup(targetElement: any, sortBy: string = 'first_name'){
     // some sorting has been done via onClick on menu-options
     if(!targetElement){
       setSortingDirection(!sortingDirectionAscending)

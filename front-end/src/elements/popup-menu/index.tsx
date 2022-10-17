@@ -16,8 +16,8 @@ export default function BasicMenu({ el, handleMenuPopup }) {
           'aria-labelledby': 'basic-button',
         }}
       >
-        <MenuItem onClick={(e: React.MouseEvent<any>) => handleMenuPopup(null)}>Sort by first name</MenuItem>
-        <MenuItem onClick={(e: React.MouseEvent<any>) => handleMenuPopup(null)}>Sort by last name</MenuItem>
+        <MenuItem onClick={(e: React.MouseEvent<any>) => handleMenuPopup(null,'first_name')}>Sort by first name</MenuItem>
+        <MenuItem onClick={(e: React.MouseEvent<any>) => handleMenuPopup(null,'last_name')}>Sort by last name</MenuItem>
     </Menu>
   );
 }
