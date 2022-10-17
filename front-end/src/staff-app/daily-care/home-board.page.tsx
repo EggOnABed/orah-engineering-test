@@ -9,6 +9,8 @@ import { Person } from "shared/models/person"
 import { useApi } from "shared/hooks/use-api"
 import { StudentListTile } from "staff-app/components/student-list-tile/student-list-tile.component"
 import { ActiveRollOverlay, ActiveRollAction } from "staff-app/components/active-roll-overlay/active-roll-overlay.component"
+import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
+import BasicMenu from "elements/popup-menu"
 
 export const HomeBoardPage: React.FC = () => {
   const [isRollMode, setIsRollMode] = useState(false)
@@ -65,10 +67,27 @@ interface ToolbarProps {
   onItemClick: (action: ToolbarAction, value?: string) => void
 }
 const Toolbar: React.FC<ToolbarProps> = (props) => {
+  console.log('Toolbar rendered');
+  const [showSortingPopup, setShowSortingPopup] = useState(null)
   const { onItemClick } = props
+
+  function handleMenuPopup(targetElement: any){
+    debugger
+    console.log(targetElement)
+    setShowSortingPopup(targetElement)
+  }
+
   return (
     <S.ToolbarContainer>
-      <div onClick={() => onItemClick("sort")}>First Name</div>
+      <S.Name onClick={() => onItemClick("sort")}>
+        <ArrowUpwardIcon 
+          onMouseEnter={(e: React.MouseEvent<any>) => handleMenuPopup(e.currentTarget)}
+        />
+        {
+          !!showSortingPopup ? <BasicMenu el={showSortingPopup} handleMenuPopup={handleMenuPopup}/> : null
+        }
+        <S.NameSpan >Name</S.NameSpan>
+      </S.Name>
       <div>Search</div>
       <S.Button onClick={() => onItemClick("roll")}>Start Roll</S.Button>
     </S.ToolbarContainer>
@@ -99,4 +118,12 @@ const S = {
       border-radius: ${BorderRadius.default};
     }
   `,
+  Name: styled.div`
+    display: flex;
+  `,
+  NameSpan: styled.span`
+    display: flex;
+    margin: auto;
+    margin-left: 30px;
+  `
 }
