@@ -1,6 +1,7 @@
 import * as React from 'react';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
+import './index.css'
 
 export default function BasicMenu({ el, handleMenuPopup }) {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(el);
@@ -11,7 +12,6 @@ export default function BasicMenu({ el, handleMenuPopup }) {
         id="basic-menu"
         anchorEl={anchorEl}
         open={open}
-        // style={{ pointerEvents: 'none'}}
         MenuListProps={{
           'aria-labelledby': 'basic-button',
         }}

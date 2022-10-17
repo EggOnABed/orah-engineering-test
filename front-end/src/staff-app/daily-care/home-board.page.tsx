@@ -10,7 +10,8 @@ import { useApi } from "shared/hooks/use-api"
 import { StudentListTile } from "staff-app/components/student-list-tile/student-list-tile.component"
 import { ActiveRollOverlay, ActiveRollAction } from "staff-app/components/active-roll-overlay/active-roll-overlay.component"
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
-import BasicMenu from "elements/popup-menu"
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
+import BasicMenu from "elements/popup-menu/index"
 
 export const HomeBoardPage: React.FC = () => {
   const [isRollMode, setIsRollMode] = useState(false)
@@ -67,22 +68,27 @@ interface ToolbarProps {
   onItemClick: (action: ToolbarAction, value?: string) => void
 }
 const Toolbar: React.FC<ToolbarProps> = (props) => {
-  console.log('Toolbar rendered');
   const [showSortingPopup, setShowSortingPopup] = useState(null)
+  const [sortingDirectionAscending, setSortingDirection] = useState(true)
   const { onItemClick } = props
 
   function handleMenuPopup(targetElement: any){
-    debugger
-    console.log(targetElement)
+    // some sorting has been done via onClick
+    if(!targetElement){
+      setSortingDirection(!sortingDirectionAscending)
+    }
     setShowSortingPopup(targetElement)
   }
 
   return (
     <S.ToolbarContainer>
       <S.Name onClick={() => onItemClick("sort")}>
-        <ArrowUpwardIcon 
-          onMouseEnter={(e: React.MouseEvent<any>) => handleMenuPopup(e.currentTarget)}
-        />
+        <div onMouseEnter={(e: React.MouseEvent<any>) => handleMenuPopup(e.currentTarget)}>
+          {
+            sortingDirectionAscending ? <ArrowDownwardIcon/> :  <ArrowUpwardIcon/>
+          }
+        </div>
+
         {
           !!showSortingPopup ? <BasicMenu el={showSortingPopup} handleMenuPopup={handleMenuPopup}/> : null
         }
