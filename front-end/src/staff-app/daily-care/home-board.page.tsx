@@ -99,7 +99,8 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
     if(value.length > 2){
       const dataSource = props.studentData.students.length > 0 ? props.studentData.students : props.data.students
       const students = dataSource.filter(student=>{
-        return student.first_name.toLowerCase().includes(value.toLowerCase()) || student.last_name.toLowerCase().includes(value.toLowerCase())
+        return student.first_name.toLowerCase().includes(value.toLowerCase()) || student.last_name.toLowerCase().includes(value.toLowerCase()) || 
+        (student.first_name.toLowerCase() + ' ' + student.last_name.toLowerCase()).includes(value.toLowerCase())
       })
       props.setStudentData({
         students: students, type: 'success'
