@@ -84,7 +84,7 @@ export const HomeBoardPage: React.FC = () => {
         {loadState === "loaded" && data?.students && (
           <>
             {studentData?.students.map((s) => (
-              <StudentListTile key={s.id} isRollMode={isRollMode} student={s} freshAttendance={freshAttendance}/>
+              <StudentListTile key={s.id} isRollMode={isRollMode} editable={true} student={s} freshAttendance={freshAttendance}/>
             ))}
             {
               studentData?.students.length === 0 ? <S.NoStudentFound>No such student in class</S.NoStudentFound> : null
@@ -118,15 +118,20 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
   const [searchFieldValue, setSearchFieldValue] = useState('')
   const { onItemClick } = props;
 
+  function filteringLogic(dataSource, value:string){
+    return dataSource.filter(student=>{
+      return student.first_name.toLowerCase().includes(value.toLowerCase()) || student.last_name.toLowerCase().includes(value.toLowerCase()) || 
+      (student.first_name.toLowerCase() + ' ' + student.last_name.toLowerCase()).includes(value.toLowerCase())
+    })
+  }
+
   function handleSearch(value: string){
+    const backSpaceBtnPressed: boolean = value.length < searchFieldValue.length;
     setSearchFieldValue(value)
     // start filtering by names only if search length > 2
     if(value.length > 2){
-      const dataSource = props.studentData.students.length > 0 ? props.studentData.students : props.data.students
-      const students = dataSource.filter(student=>{
-        return student.first_name.toLowerCase().includes(value.toLowerCase()) || student.last_name.toLowerCase().includes(value.toLowerCase()) || 
-        (student.first_name.toLowerCase() + ' ' + student.last_name.toLowerCase()).includes(value.toLowerCase())
-      })
+      const dataSource = backSpaceBtnPressed ? props.data.students : (props.studentData.students.length ? props.studentData.students : props.data.students)
+      const students = filteringLogic(dataSource,value)
       props.setStudentData({
         students: students, type: 'success'
       })
