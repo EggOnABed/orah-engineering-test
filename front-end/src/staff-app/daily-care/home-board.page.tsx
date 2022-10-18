@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useContext } from "react"
 import styled from "styled-components"
 import Button from "@material-ui/core/ButtonBase"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
@@ -12,6 +12,7 @@ import { ActiveRollOverlay, ActiveRollAction } from "staff-app/components/active
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import BasicMenu from "elements/popup-menu/index"
+import { AppCtx } from "staff-app/app"
 
 export const HomeBoardPage: React.FC = () => {
   const [isRollMode, setIsRollMode] = useState(false)
@@ -36,7 +37,7 @@ export const HomeBoardPage: React.FC = () => {
   return (
     <>
       <S.PageContainer>
-        <Toolbar onItemClick={onToolbarAction} />
+        <Toolbar onItemClick={onToolbarAction} data={data!} getStudents={getStudents}/>
 
         {loadState === "loading" && (
           <CenteredContainer>
@@ -65,18 +66,33 @@ export const HomeBoardPage: React.FC = () => {
 
 type ToolbarAction = "roll" | "sort"
 interface ToolbarProps {
-  onItemClick: (action: ToolbarAction, value?: string) => void
+  onItemClick: (action: ToolbarAction, value?: string) => void,
+  data: { students: Person[]; }
+  getStudents: Function
 }
 
 const Toolbar: React.FC<ToolbarProps> = (props) => {
   const [showSortingPopup, setShowSortingPopup] = useState(null)
   const [sortingDirectionAscending, setSortingDirection] = useState(true)
-  const { onItemClick } = props
+  const appContextData = useContext(AppCtx);
+  const { onItemClick } = props;
 
   function handleMenuPopup(targetElement: any, sortBy: string = 'first_name'){
     // some sorting has been done via onClick on menu-options
     if(!targetElement){
+      props.data.students.sort((a,b)=>{
+        if ( a[sortBy] < b[sortBy] ){
+          return sortingDirectionAscending ? 1 : -1;
+        }
+        if ( a[sortBy] > b[sortBy] ){
+          return sortingDirectionAscending ? -1 : 1;
+        }
+        return 0;
+      })
+      // Change arrow direction to opposite of the currentlt sorted direction
       setSortingDirection(!sortingDirectionAscending)
+      // update data & re-render HomeBoardPage component to reflect the sorted changes in the DOM
+      props.getStudents({'dataSortedByUser': true, data : props.data})
     }
     // user click anywhere outside the menu to close the popup
     else if(targetElement === 'closePopup'){
