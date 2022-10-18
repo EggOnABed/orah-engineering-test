@@ -3,6 +3,8 @@ import Dialog from '@mui/material/Dialog';
 import Slide from '@mui/material/Slide';
 import { TransitionProps } from '@mui/material/transitions';
 import './index.css';
+import { AppCtx } from 'staff-app/app';
+import { StudentListTile } from 'staff-app/components/student-list-tile/student-list-tile.component';
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -14,7 +16,10 @@ const Transition = React.forwardRef(function Transition(
 });
 
 export default function ActivityDetailsPopup({ setShowModal }) {
+  const appContext = React.useContext(AppCtx)
   const [open, setOpen] = React.useState(true);
+
+  console.log(appContext?.appData.students)
 
   const handleClose = () => {
     setOpen(false);
@@ -30,7 +35,11 @@ export default function ActivityDetailsPopup({ setShowModal }) {
         onClose={handleClose}
         aria-describedby="alert-dialog-slide-description"
       >
-        Hello world
+        {
+          appContext?.appData?.students?.map((s) => (
+            <StudentListTile key={s.id} isRollMode={true} student={s} freshAttendance={false}/>
+          ))
+        }
       </Dialog>
     </div>
   );
