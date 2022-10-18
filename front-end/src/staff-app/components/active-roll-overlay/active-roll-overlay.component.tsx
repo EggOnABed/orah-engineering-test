@@ -63,7 +63,7 @@ export const ActiveRollOverlay: React.FC<Props> = (props) => {
             <Button color="inherit" onClick={() => onItemClick("exit")}>
               Exit
             </Button>
-            <Button color="inherit" style={{ marginLeft: Spacing.u2 }} onClick={() => onItemClick("exit")}>
+            <Button color="inherit" style={{ marginLeft: Spacing.u2 }} onClick={() => onItemClick("filter")}>
               Complete
             </Button>
           </div>

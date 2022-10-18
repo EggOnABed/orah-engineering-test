@@ -13,10 +13,13 @@ import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import BasicMenu from "elements/popup-menu/index"
 import { AppCtx } from "staff-app/app"
+import { Activity } from "shared/models/activity"
 
 export const HomeBoardPage: React.FC = () => {
   const appContext = useContext(AppCtx)
   const [isRollMode, setIsRollMode] = useState(false)
+  const [saveActiveRoll, rollSaveData] = useApi<{ success: boolean }>({ url: "save-roll" })
+  const [getActivities, activityData] = useApi<{ activity: Activity[] }>({ url: "get-activities" })
   const [getStudents, data, loadState] = useApi<{ students: Person[] }>({ url: "get-homeboard-students" })
   const [studentData, setStudentData] = useState(data)
 
@@ -35,6 +38,18 @@ export const HomeBoardPage: React.FC = () => {
     })})
   },[data])
 
+  useEffect(()=>{
+    if(activityData?.activity){
+      console.log(activityData.activity)
+    }
+  },[activityData])
+
+  useEffect(()=>{
+    if(rollSaveData?.success){
+      getActivities()
+    }
+  },[rollSaveData])
+
   const onToolbarAction = (action: ToolbarAction) => {
     if (action === "roll") {
       setIsRollMode(true)
@@ -44,6 +59,18 @@ export const HomeBoardPage: React.FC = () => {
   const onActiveRollAction = (action: ActiveRollAction) => {
     if (action === "exit") {
       setIsRollMode(false)
+    }
+    else if(action === "filter"){
+      const packet = { 
+        student_roll_states: appContext?.appData.students?.map(student=>{
+          return {
+            student_id: student.id, 
+            roll_state: student.attendanceState
+          }
+        })
+      }
+      // call POST API to save roll data on backend (in local storage)
+      saveActiveRoll(packet)
     }
   }
 
