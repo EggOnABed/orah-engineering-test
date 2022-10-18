@@ -9,7 +9,7 @@ import ActivityDetailsPopup from "elements/modal"
 export const ActivityPage: React.FC = () => {
   const [getActivities, activityData] = useApi<{ activity: Activity[] }>({ url: "get-activities" })
   const [activity, setActivity] = useState(activityData?.activity)
-  const [showModal, setShowModal] = useState(false)
+  const [showModalId, setShowModalId] = useState(-1)
 
   useEffect(()=>{
     if(activityData?.activity){
@@ -31,7 +31,7 @@ export const ActivityPage: React.FC = () => {
       activity?.length! > 0 ? <>
         {
           activity?.map(item=>{
-            return <S.ActivityList key={ JSON.stringify(item.date) } onClick={()=> { setShowModal(true) }}>
+            return <S.ActivityList key={ JSON.stringify(item.date) } onClick={()=> { setShowModalId(item.entity.id) }}>
               <S.Time>{ moment(item.date).format('LLL') }</S.Time>
               <RollStateList
                 stateList={[
@@ -42,7 +42,7 @@ export const ActivityPage: React.FC = () => {
                 ]}
               />
               {
-                showModal ? <ActivityDetailsPopup data={item.entity.student_roll_states} setShowModal={setShowModal}/> : null
+                showModalId === item.entity.id ? <ActivityDetailsPopup data={item.entity.student_roll_states} setShowModal={setShowModalId}/> : null
               } 
             </S.ActivityList>
           })

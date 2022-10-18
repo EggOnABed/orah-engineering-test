@@ -16,14 +16,13 @@ const Transition = React.forwardRef(function Transition(
 });
 
 export default function ActivityDetailsPopup({ data, setShowModal }) {
-  const appContext = React.useContext(AppCtx)
   const [open, setOpen] = React.useState(true);
 
   console.log(data)
 
   const handleClose = () => {
     setOpen(false);
-    setShowModal(false)
+    setShowModal(-1)
   };
 
   return (
