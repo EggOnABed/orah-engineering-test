@@ -17,6 +17,7 @@ import { AppCtx } from "staff-app/app"
 export const HomeBoardPage: React.FC = () => {
   const appContext = useContext(AppCtx)
   const [isRollMode, setIsRollMode] = useState(false)
+  const [freshAttendance, setFreshAttendance] = useState(false)
 
   const [saveActiveRoll, rollSaveData] = useApi<{ success: boolean }>({ url: "save-roll" })
   const [getStudents, data, loadState] = useApi<{ students: Person[] }>({ url: "get-homeboard-students" })
@@ -40,15 +41,23 @@ export const HomeBoardPage: React.FC = () => {
 
   const onToolbarAction = (action: ToolbarAction) => {
     if (action === "roll") {
-      setIsRollMode(true)
+      setFreshAttendance(true)
+      const unmarkedStudentData = appContext?.appData?.students?.map(student=>{
+        student.attendanceState = 'unmark'
+        return student
+      })
+      console.log(unmarkedStudentData)
+      appContext?.updateAppData({ students: unmarkedStudentData })
+      setIsRollMode(true) 
+
+      // setTimeout(()=>{
+      //   setFreshAttendance(false)
+      // },1000)
     }
   }
 
   const onActiveRollAction = (action: ActiveRollAction) => {
-    if (action === "exit") {
-      setIsRollMode(false)
-    }
-    else if(action === "filter"){
+    if(action === "filter"){
       const packet = { 
         student_roll_states: appContext?.appData.students?.map(student=>{
           return {
@@ -60,6 +69,7 @@ export const HomeBoardPage: React.FC = () => {
       // call POST API to save roll data on backend (in local storage)
       saveActiveRoll(packet)
     }
+    setIsRollMode(false)
   }
 
   return (
@@ -76,7 +86,7 @@ export const HomeBoardPage: React.FC = () => {
         {loadState === "loaded" && data?.students && (
           <>
             {studentData?.students.map((s) => (
-              <StudentListTile key={s.id} isRollMode={isRollMode} student={s} />
+              <StudentListTile key={s.id} isRollMode={isRollMode} student={s} freshAttendance={freshAttendance}/>
             ))}
             {
               studentData?.students.length === 0 ? <S.NoStudentFound>No such student in class</S.NoStudentFound> : null

@@ -21,7 +21,16 @@ export const ActivityPage: React.FC = () => {
   return <S.Container>
     {
       activity?.length! > 0 ? <>
-
+        {
+          activity?.map(item=>{
+            return <div>
+              <span>Time</span>
+              <div>
+                
+              </div>
+            </div>
+          })
+        }
       </> : <S.NoActivity>No Activity as yet. Looks like holidays.</S.NoActivity>
     }
   </S.Container>
