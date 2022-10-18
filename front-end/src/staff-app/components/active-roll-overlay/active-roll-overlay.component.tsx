@@ -16,19 +16,22 @@ export const ActiveRollOverlay: React.FC<Props> = (props) => {
   const appContext = useContext(AppCtx)
   const { isActive, onItemClick } = props
 
+  // logic to count no. of present, late & absent students
   function reducer(dataSource: any, reduceBy: string){
     return dataSource?.reduce((total:number, currentValue:any)=>{
       return total + (currentValue.attendanceState === reduceBy ? 1 : 0)
     },0) || 0
   }
 
+  // states to manage count of student roll-states
   const [all, setAll] = useState(appContext?.appData.students?.length || 0)
   const [present, setPresent] = useState(reducer(appContext?.appData.students, 'present'))
   const [late, setLate] = useState(reducer(appContext?.appData.students, 'late'))
   const [absent, setAbsent] = useState(reducer(appContext?.appData.students, 'absent'))
-
+  // filterDataBy can be '', 'present', 'late' or 'absent'
   const [filterDataBy, setFilterDataBy] = useState('')
 
+  // update states if appContext changed by change of roll-states by user from home-board component
   useEffect(()=>{
     setAll(appContext?.appData.students?.length || 0)
     setPresent(reducer(appContext?.appData.students, 'present'))
@@ -36,6 +39,7 @@ export const ActiveRollOverlay: React.FC<Props> = (props) => {
     setAbsent(reducer(appContext?.appData.students, 'absent'))
   },[appContext])
 
+  // if user clicks on any roll-state icons in footer to filter results by that roll-state
   useEffect(()=>{
     props?.setStudentData({ students: filterDataBy === 'all' ? appContext?.appData.students : appContext?.appData.students?.filter((student:any)=>{
         if(student.attendanceState === filterDataBy){

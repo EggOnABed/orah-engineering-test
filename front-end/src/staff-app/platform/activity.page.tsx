@@ -9,20 +9,25 @@ import { CenteredContainer } from "shared/components/centered-container/centered
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 
 export const ActivityPage: React.FC = () => {
+  // GET mock-API for fetching activities data on initial page load
   const [getActivities, activityData, loaderState] = useApi<{ activity: Activity[] }>({ url: "get-activities" })
   const [activity, setActivity] = useState(activityData?.activity)
+  // state to show modal if user clicks on any activity row
   const [showModalId, setShowModalId] = useState(-1)
 
+  // update activity state if response from mock-API received
   useEffect(()=>{
     if(activityData?.activity){
       setActivity(activityData.activity)
     }
   },[activityData])
 
+  // call mock-API on initial page-load
   useEffect(()=>{
     getActivities()
   },[getActivities])
 
+  // logic to count no. of 'present', 'late' & 'absent' students
   function reducer(source:any, reduceBy:string){
     return source.reduce((total:any,current:any)=>{ return total + (current.roll_state === reduceBy ? 1 : 0) },0)
   }

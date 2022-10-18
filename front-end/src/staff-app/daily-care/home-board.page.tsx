@@ -16,12 +16,15 @@ import { AppCtx } from "staff-app/app"
 
 export const HomeBoardPage: React.FC = () => {
   const appContext = useContext(AppCtx)
+  // state to manage attendance view
   const [isRollMode, setIsRollMode] = useState(false)
+  // re-initialize all roll states to unmark on click of 'Start Roll'
   const [freshAttendance, setFreshAttendance] = useState(false)
-
+  // POST mock-API for saving attendance data to local-storage (mock backend)
   const [saveActiveRoll, rollSaveData] = useApi<{ success: boolean }>({ url: "save-roll" })
+  // GET mock-API for fetching student data on initial page load
   const [getStudents, data, loadState] = useApi<{ students: Person[] }>({ url: "get-homeboard-students" })
-  
+  // state to manage filtering of student data from search bar w/o changing the unfiltered 'data' from inital API   
   const [studentData, setStudentData] = useState(data)
 
   // on initial page-load, call mock-API & fetch student data
@@ -40,6 +43,7 @@ export const HomeBoardPage: React.FC = () => {
   },[data])
 
   const onToolbarAction = (action: ToolbarAction) => {
+    // on click of 'Start roll'
     if (action === "roll") {
       setFreshAttendance(true)
       const unmarkedStudentData = appContext?.appData?.students?.map(student=>{
@@ -48,12 +52,15 @@ export const HomeBoardPage: React.FC = () => {
       })
       
       appContext?.updateAppData({ students: unmarkedStudentData })
+      // open attendance view
       setIsRollMode(true) 
     }
   }
 
   const onActiveRollAction = (action: ActiveRollAction) => {
+    // on click of 'submit' roll calls
     if(action === "filter"){
+      // prepare POST packet
       const packet = { 
         student_roll_states: appContext?.appData.students?.map(student=>{
           return {
@@ -67,6 +74,7 @@ export const HomeBoardPage: React.FC = () => {
       // call POST API to save roll data on backend (in local storage)
       saveActiveRoll(packet)
     }
+    // back to student view
     setIsRollMode(false)
   }
 
@@ -98,12 +106,14 @@ export const HomeBoardPage: React.FC = () => {
           </CenteredContainer>
         )}
       </S.PageContainer>
+      {/* footer component for attendance mgmt */}
       <ActiveRollOverlay isActive={isRollMode} onItemClick={onActiveRollAction} setStudentData={setStudentData}/>
     </>
   )
 }
 
 type ToolbarAction = "roll" | "sort"
+// allowed variables for props 
 interface ToolbarProps {
   onItemClick: (action: ToolbarAction, value?: string) => void,
   studentData: { students: Person[]; },
@@ -113,11 +123,15 @@ interface ToolbarProps {
 }
 
 const Toolbar: React.FC<ToolbarProps> = (props) => {
+  // state for sorting popup visibility toggling
   const [showSortingPopup, setShowSortingPopup] = useState(null)
+  // state to toggle sorting direction on user-click events
   const [sortingDirectionAscending, setSortingDirection] = useState(true)
+  // state to REACTively control value of search field
   const [searchFieldValue, setSearchFieldValue] = useState('')
   const { onItemClick } = props;
 
+  // core filtering logic - check if included in f_name || l_name || full_name
   function filteringLogic(dataSource, value:string){
     return dataSource.filter(student=>{
       return student.first_name.toLowerCase().includes(value.toLowerCase()) || student.last_name.toLowerCase().includes(value.toLowerCase()) || 
@@ -125,13 +139,16 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
     })
   }
 
+  // runs on every onChange event in search-bar
   function handleSearch(value: string){
+    // for managing an ugly edge-case
     const backSpaceBtnPressed: boolean = value.length < searchFieldValue.length;
     setSearchFieldValue(value)
     // start filtering by names only if search length > 2
     if(value.length > 2){
       const dataSource = backSpaceBtnPressed ? props.data.students : (props.studentData.students.length ? props.studentData.students : props.data.students)
       const students = filteringLogic(dataSource,value)
+      // update studentData with filtered results
       props.setStudentData({
         students: students, type: 'success'
       })
@@ -144,9 +161,11 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
     }
   }
 
+  // runs when user interacts with sorting functionality in myriad of ways
   function handleMenuPopup(targetElement: any, sortBy: string = 'first_name'){
     // some sorting has been done via onClick on menu-options
     if(!targetElement){
+      // core sorting logic
       props.data.students.sort((a,b)=>{
         if ( a[sortBy] < b[sortBy] ){
           return sortingDirectionAscending ? 1 : -1;
