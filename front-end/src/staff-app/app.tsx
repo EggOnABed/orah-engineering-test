@@ -12,16 +12,20 @@ interface AppContextInterface {
   updateAppData: Function
 }
 
+interface Attendance{
+  present: boolean,
+  late: boolean,
+  absent: boolean
+}
+
 interface AppDataI {
-  sortBy: string
+  attendanceState?: Attendance[]
 }
 
 export const AppCtx = createContext<AppContextInterface | null>(null);
 
 function App() {
-  const [appData, setAppData] = useState({
-    sortBy: 'first_name'
-  })
+  const [appData, setAppData] = useState({})
 
   const updateAppData = (item) => {
     setAppData(oldObj => {
