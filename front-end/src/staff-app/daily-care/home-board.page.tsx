@@ -49,10 +49,6 @@ export const HomeBoardPage: React.FC = () => {
       console.log(unmarkedStudentData)
       appContext?.updateAppData({ students: unmarkedStudentData })
       setIsRollMode(true) 
-
-      // setTimeout(()=>{
-      //   setFreshAttendance(false)
-      // },1000)
     }
   }
 
@@ -62,7 +58,9 @@ export const HomeBoardPage: React.FC = () => {
         student_roll_states: appContext?.appData.students?.map(student=>{
           return {
             student_id: student.id, 
-            roll_state: student.attendanceState
+            roll_state: student.attendanceState,
+            first_name: student.first_name,
+            last_name: student.last_name,
           }
         })
       }

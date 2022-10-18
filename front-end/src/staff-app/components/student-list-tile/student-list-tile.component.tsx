@@ -9,12 +9,13 @@ import { AppCtx } from "staff-app/app"
 
 interface Props {
   isRollMode?: boolean
-  student: Person, 
+  student: any, 
   freshAttendance: boolean
 }
 export const StudentListTile: React.FC<Props> = ({ isRollMode, student, freshAttendance = false }) => {
   const appContext = useContext(AppCtx)
-  const initialState = freshAttendance ? 'unmark' : (appContext?.appData.students?.filter(item=>{ return item.id === student.id }))[0]?.attendanceState
+  const appDataSource = (appContext?.appData?.students?.filter(item=>{ return item.id === student.id }))
+  const initialState = freshAttendance ? 'unmark' : (appDataSource?.length > 0 ? appDataSource[0]?.attendanceState : student.roll_state)
   const [state, setState] = useState(initialState);
   
   useEffect(()=>{

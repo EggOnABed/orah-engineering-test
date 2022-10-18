@@ -41,13 +41,13 @@ export const ActivityPage: React.FC = () => {
                   { type: "absent", count: reducer(item.entity.student_roll_states, 'absent') },
                 ]}
               />
+              {
+                showModal ? <ActivityDetailsPopup data={item.entity.student_roll_states} setShowModal={setShowModal}/> : null
+              } 
             </S.ActivityList>
           })
         }
       </> : <S.NoActivity>No Activity as yet. Looks like holidays.</S.NoActivity>
-    }
-    {
-      showModal ? <ActivityDetailsPopup setShowModal={setShowModal}/> : null
     }
   </S.Container>
 }

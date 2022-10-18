@@ -6,7 +6,7 @@ export interface Roll {
 }
 
 export interface RollInput {
-  student_roll_states: { student_id: number; roll_state: RolllStateType }[]
+  student_roll_states: { student_id: number; roll_state: RolllStateType, first_name: string, last_name: string }[]
 }
 
 export type RolllStateType = "unmark" | "present" | "absent" | "late"

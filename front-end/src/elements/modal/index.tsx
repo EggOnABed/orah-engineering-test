@@ -15,11 +15,11 @@ const Transition = React.forwardRef(function Transition(
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export default function ActivityDetailsPopup({ setShowModal }) {
+export default function ActivityDetailsPopup({ data, setShowModal }) {
   const appContext = React.useContext(AppCtx)
   const [open, setOpen] = React.useState(true);
 
-  console.log(appContext?.appData.students)
+  console.log(data)
 
   const handleClose = () => {
     setOpen(false);
@@ -36,8 +36,8 @@ export default function ActivityDetailsPopup({ setShowModal }) {
         aria-describedby="alert-dialog-slide-description"
       >
         {
-          appContext?.appData?.students?.map((s) => (
-            <StudentListTile key={s.id} isRollMode={true} student={s} freshAttendance={false}/>
+          data.map((item:any) => (
+            <StudentListTile key={item.student_id} isRollMode={true} student={item} freshAttendance={false}/>
           ))
         }
       </Dialog>
