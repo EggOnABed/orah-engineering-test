@@ -4,11 +4,12 @@ import { useApi } from "shared/hooks/use-api"
 import { Activity } from "shared/models/activity"
 import { RollStateList } from "staff-app/components/roll-state/roll-state-list.component"
 import * as moment from 'moment'
-import { Roll } from "shared/models/roll"
+import ActivityDetailsPopup from "elements/modal"
 
 export const ActivityPage: React.FC = () => {
   const [getActivities, activityData] = useApi<{ activity: Activity[] }>({ url: "get-activities" })
   const [activity, setActivity] = useState(activityData?.activity)
+  const [showModal, setShowModal] = useState(false)
 
   useEffect(()=>{
     if(activityData?.activity){
@@ -30,7 +31,7 @@ export const ActivityPage: React.FC = () => {
       activity?.length! > 0 ? <>
         {
           activity?.map(item=>{
-            return <S.ActivityList key={ JSON.stringify(item.date) }>
+            return <S.ActivityList key={ JSON.stringify(item.date) } onClick={()=> { setShowModal(true) }}>
               <S.Time>{ moment(item.date).format('LLL') }</S.Time>
               <RollStateList
                 stateList={[
@@ -44,6 +45,9 @@ export const ActivityPage: React.FC = () => {
           })
         }
       </> : <S.NoActivity>No Activity as yet. Looks like holidays.</S.NoActivity>
+    }
+    {
+      showModal ? <ActivityDetailsPopup setShowModal={setShowModal}/> : null
     }
   </S.Container>
 }
