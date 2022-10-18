@@ -17,3 +17,7 @@
 .app-header a {
   color: #fff;
 }
+::placeholder {
+  color: white;
+  opacity: 0.75; 
+}

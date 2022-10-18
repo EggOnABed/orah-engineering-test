@@ -17,10 +17,16 @@ import { AppCtx } from "staff-app/app"
 export const HomeBoardPage: React.FC = () => {
   const [isRollMode, setIsRollMode] = useState(false)
   const [getStudents, data, loadState] = useApi<{ students: Person[] }>({ url: "get-homeboard-students" })
+  const [studentData, setStudentData] = useState(data)
+  const appContextData = useContext(AppCtx);
 
   useEffect(() => {
     void getStudents()
   }, [getStudents])
+
+  useEffect(()=>{
+    setStudentData(data)
+  },[data])
 
   const onToolbarAction = (action: ToolbarAction) => {
     if (action === "roll") {
@@ -37,7 +43,7 @@ export const HomeBoardPage: React.FC = () => {
   return (
     <>
       <S.PageContainer>
-        <Toolbar onItemClick={onToolbarAction} data={data!} getStudents={getStudents}/>
+        <Toolbar onItemClick={onToolbarAction} data={data} studentData={studentData!} getStudents={getStudents} setStudentData={setStudentData}/>
 
         {loadState === "loading" && (
           <CenteredContainer>
@@ -47,7 +53,7 @@ export const HomeBoardPage: React.FC = () => {
 
         {loadState === "loaded" && data?.students && (
           <>
-            {data.students.map((s) => (
+            {studentData?.students.map((s) => (
               <StudentListTile key={s.id} isRollMode={isRollMode} student={s} />
             ))}
           </>
@@ -67,15 +73,39 @@ export const HomeBoardPage: React.FC = () => {
 type ToolbarAction = "roll" | "sort"
 interface ToolbarProps {
   onItemClick: (action: ToolbarAction, value?: string) => void,
-  data: { students: Person[]; }
-  getStudents: Function
+  studentData: { students: Person[]; },
+  data: { students: Person[]; },
+  getStudents: Function,
+  setStudentData: Function
 }
 
 const Toolbar: React.FC<ToolbarProps> = (props) => {
   const [showSortingPopup, setShowSortingPopup] = useState(null)
   const [sortingDirectionAscending, setSortingDirection] = useState(true)
-  const appContextData = useContext(AppCtx);
+  const [searchFieldValue, setSearchFieldValue] = useState('')
   const { onItemClick } = props;
+
+  function handleSearch(value: string){
+    setSearchFieldValue(value)
+    // start filtering by names only if search length > 2
+    if(value.length > 2){
+      debugger
+      const dataSource = props.studentData.students.length > 0 ? props.studentData.students : props.data.students
+      const students = dataSource.filter(student=>{
+        return student.first_name.toLowerCase().includes(value.toLowerCase()) || student.last_name.toLowerCase().includes(value.toLowerCase())
+      })
+      console.log(students)
+      props.setStudentData({
+        students: students, type: 'success'
+      })
+    }
+    // fill previous unfiltered data back if search length <= 2
+    else{
+      props.setStudentData({
+        students: props.data.students, type: 'success'
+      })
+    }
+  }
 
   function handleMenuPopup(targetElement: any, sortBy: string = 'first_name'){
     // some sorting has been done via onClick on menu-options
@@ -115,7 +145,7 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
         }
         <S.NameSpan >Name</S.NameSpan>
       </S.Name>
-      <div>Search</div>
+      <div><S.Input placeholder="Search" value={searchFieldValue} onChange={(e)=>{handleSearch(e.target.value)}}/></div>
       <S.Button onClick={() => onItemClick("roll")}>Start Roll</S.Button>
     </S.ToolbarContainer>
   )
@@ -152,5 +182,15 @@ const S = {
     display: flex;
     margin: auto;
     margin-left: 30px;
+  `,
+  Input: styled.input`
+    width: 150px;
+    height: 25px;
+    background: none;
+    text-align: center;
+    color: white;
+    border: none;
+    font-size: 13px;
+    font-weight: 600;
   `
 }
