@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useContext } from "react"
 import styled from "styled-components"
 import Button from "@material-ui/core/ButtonBase"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
@@ -12,8 +12,10 @@ import { ActiveRollOverlay, ActiveRollAction } from "staff-app/components/active
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import BasicMenu from "elements/popup-menu/index"
+import { AppCtx } from "staff-app/app"
 
 export const HomeBoardPage: React.FC = () => {
+  const appContext = useContext(AppCtx)
   const [isRollMode, setIsRollMode] = useState(false)
   const [getStudents, data, loadState] = useApi<{ students: Person[] }>({ url: "get-homeboard-students" })
   const [studentData, setStudentData] = useState(data)
@@ -24,6 +26,11 @@ export const HomeBoardPage: React.FC = () => {
 
   useEffect(()=>{
     setStudentData(data)
+    appContext?.updateAppData({ students : data?.students.map(student=>{
+      return {
+        ...student, attendanceState: 'unmarked'
+      }
+    })})
   },[data])
 
   const onToolbarAction = (action: ToolbarAction) => {

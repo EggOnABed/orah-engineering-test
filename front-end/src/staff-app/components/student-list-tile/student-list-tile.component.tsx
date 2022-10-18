@@ -1,16 +1,33 @@
-import React from "react"
+import React, { useContext, useEffect, useState } from "react"
 import styled from "styled-components"
 import { Spacing, BorderRadius, FontWeight } from "shared/styles/styles"
 import { Images } from "assets/images"
 import { Colors } from "shared/styles/colors"
 import { Person, PersonHelper } from "shared/models/person"
 import { RollStateSwitcher } from "staff-app/components/roll-state/roll-state-switcher.component"
+import { AppCtx } from "staff-app/app"
 
 interface Props {
   isRollMode?: boolean
   student: Person
 }
 export const StudentListTile: React.FC<Props> = ({ isRollMode, student }) => {
+  const [state, setState] = useState('unmarked');
+  const appContext = useContext(AppCtx)
+
+  useEffect(()=>{
+    const updatedStudentList = appContext?.appData.students?.map(obj=>{
+      if(obj.id === student.id){
+        return {...obj, attendanceState: state}
+      }
+      else{
+        return obj
+      }
+    })
+    appContext?.updateAppData({students: updatedStudentList})
+    console.log({students: updatedStudentList});
+  },[state])
+
   return (
     <S.Container>
       <S.Avatar url={Images.avatar}></S.Avatar>
@@ -19,7 +36,7 @@ export const StudentListTile: React.FC<Props> = ({ isRollMode, student }) => {
       </S.Content>
       {isRollMode && (
         <S.Roll>
-          <RollStateSwitcher />
+          <RollStateSwitcher onStateChange={setState} />
         </S.Roll>
       )}
     </S.Container>

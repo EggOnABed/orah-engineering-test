@@ -1,8 +1,9 @@
-import React from "react"
+import React, { useContext, useEffect, useState } from "react"
 import styled from "styled-components"
 import Button from "@material-ui/core/Button"
 import { BorderRadius, Spacing } from "shared/styles/styles"
 import { RollStateList } from "staff-app/components/roll-state/roll-state-list.component"
+import { AppCtx } from "staff-app/app"
 
 export type ActiveRollAction = "filter" | "exit"
 interface Props {
@@ -11,7 +12,26 @@ interface Props {
 }
 
 export const ActiveRollOverlay: React.FC<Props> = (props) => {
+  const appContext = useContext(AppCtx)
   const { isActive, onItemClick } = props
+
+  function reducer(dataSource: any, reduceBy: string){
+    return dataSource?.reduce((total:number, currentValue:any)=>{
+      return total + (currentValue.attendanceState === reduceBy ? 1 : 0)
+    },0) || 0
+  }
+
+  const [all, setAll] = useState(appContext?.appData.students?.length || 0)
+  const [present, setPresent] = useState(reducer(appContext?.appData.students, 'present'))
+  const [late, setLate] = useState(reducer(appContext?.appData.students, 'late'))
+  const [absent, setAbsent] = useState(reducer(appContext?.appData.students, 'absent'))
+
+  useEffect(()=>{
+    setAll(appContext?.appData.students?.length || 0)
+    setPresent(reducer(appContext?.appData.students, 'present'))
+    setLate(reducer(appContext?.appData.students, 'late'))
+    setAbsent(reducer(appContext?.appData.students, 'absent'))
+  },[appContext])
 
   return (
     <S.Overlay isActive={isActive}>
@@ -20,10 +40,10 @@ export const ActiveRollOverlay: React.FC<Props> = (props) => {
         <div>
           <RollStateList
             stateList={[
-              { type: "all", count: 0 },
-              { type: "present", count: 0 },
-              { type: "late", count: 0 },
-              { type: "absent", count: 0 },
+              { type: "all", count : all! },
+              { type: "present", count: present },
+              { type: "late", count: late },
+              { type: "absent", count: absent },
             ]}
           />
           <div style={{ marginTop: Spacing.u6 }}>

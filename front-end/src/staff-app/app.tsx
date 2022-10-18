@@ -11,15 +11,8 @@ interface AppContextInterface {
   appData: AppDataI;
   updateAppData: Function
 }
-
-interface Attendance{
-  present: boolean,
-  late: boolean,
-  absent: boolean
-}
-
 interface AppDataI {
-  attendanceState?: Attendance[]
+  students?: any[]
 }
 
 export const AppCtx = createContext<AppContextInterface | null>(null);
