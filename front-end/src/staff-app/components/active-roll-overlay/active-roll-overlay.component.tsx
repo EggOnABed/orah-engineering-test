@@ -8,7 +8,8 @@ import { AppCtx } from "staff-app/app"
 export type ActiveRollAction = "filter" | "exit"
 interface Props {
   isActive: boolean
-  onItemClick: (action: ActiveRollAction, value?: string) => void
+  onItemClick: (action: ActiveRollAction, value?: string) => void,
+  setStudentData: Function
 }
 
 export const ActiveRollOverlay: React.FC<Props> = (props) => {
@@ -26,12 +27,23 @@ export const ActiveRollOverlay: React.FC<Props> = (props) => {
   const [late, setLate] = useState(reducer(appContext?.appData.students, 'late'))
   const [absent, setAbsent] = useState(reducer(appContext?.appData.students, 'absent'))
 
+  const [filterDataBy, setFilterDataBy] = useState('')
+
   useEffect(()=>{
     setAll(appContext?.appData.students?.length || 0)
     setPresent(reducer(appContext?.appData.students, 'present'))
     setLate(reducer(appContext?.appData.students, 'late'))
     setAbsent(reducer(appContext?.appData.students, 'absent'))
   },[appContext])
+
+  useEffect(()=>{
+    props?.setStudentData({ students: filterDataBy === 'all' ? appContext?.appData.students : appContext?.appData.students?.filter((student:any)=>{
+        if(student.attendanceState === filterDataBy){
+          return student
+        }
+      }) 
+    })
+  },[filterDataBy])
 
   return (
     <S.Overlay isActive={isActive}>
@@ -45,6 +57,7 @@ export const ActiveRollOverlay: React.FC<Props> = (props) => {
               { type: "late", count: late },
               { type: "absent", count: absent },
             ]}
+            onItemClick={setFilterDataBy}
           />
           <div style={{ marginTop: Spacing.u6 }}>
             <Button color="inherit" onClick={() => onItemClick("exit")}>

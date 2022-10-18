@@ -20,10 +20,12 @@ export const HomeBoardPage: React.FC = () => {
   const [getStudents, data, loadState] = useApi<{ students: Person[] }>({ url: "get-homeboard-students" })
   const [studentData, setStudentData] = useState(data)
 
+  // on initial page-load, call mock-API & fetch student data
   useEffect(() => {
     void getStudents()
   }, [getStudents])
 
+  // on initial page-load, fill data in context API & studentData 
   useEffect(()=>{
     setStudentData(data)
     appContext?.updateAppData({ students : data?.students.map(student=>{
@@ -73,7 +75,7 @@ export const HomeBoardPage: React.FC = () => {
           </CenteredContainer>
         )}
       </S.PageContainer>
-      <ActiveRollOverlay isActive={isRollMode} onItemClick={onActiveRollAction} />
+      <ActiveRollOverlay isActive={isRollMode} onItemClick={onActiveRollAction} setStudentData={setStudentData}/>
     </>
   )
 }
