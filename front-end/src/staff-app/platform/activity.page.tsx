@@ -13,7 +13,6 @@ export const ActivityPage: React.FC = () => {
 
   useEffect(()=>{
     if(activityData?.activity){
-      console.log(activityData.activity)
       setActivity(activityData.activity)
     }
   },[activityData])

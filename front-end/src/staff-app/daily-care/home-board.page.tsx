@@ -46,7 +46,7 @@ export const HomeBoardPage: React.FC = () => {
         student.attendanceState = 'unmark'
         return student
       })
-      console.log(unmarkedStudentData)
+      
       appContext?.updateAppData({ students: unmarkedStudentData })
       setIsRollMode(true) 
     }

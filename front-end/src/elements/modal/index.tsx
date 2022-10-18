@@ -18,8 +18,6 @@ const Transition = React.forwardRef(function Transition(
 export default function ActivityDetailsPopup({ data, setShowModal }) {
   const [open, setOpen] = React.useState(true);
 
-  console.log(data)
-
   const handleClose = () => {
     setOpen(false);
     setShowModal(-1)
@@ -36,7 +34,7 @@ export default function ActivityDetailsPopup({ data, setShowModal }) {
       >
         {
           data.map((item:any) => (
-            <StudentListTile key={item.student_id} isRollMode={true} student={item} freshAttendance={false}/>
+            <StudentListTile editable={false} key={item.student_id} isRollMode={true} student={item} freshAttendance={false}/>
           ))
         }
       </Dialog>

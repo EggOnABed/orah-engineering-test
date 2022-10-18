@@ -10,9 +10,10 @@ import { AppCtx } from "staff-app/app"
 interface Props {
   isRollMode?: boolean
   student: any, 
-  freshAttendance: boolean
+  freshAttendance: boolean,
+  editable: boolean
 }
-export const StudentListTile: React.FC<Props> = ({ isRollMode, student, freshAttendance = false }) => {
+export const StudentListTile: React.FC<Props> = ({ editable = true, isRollMode, student, freshAttendance = false }) => {
   const appContext = useContext(AppCtx)
   const appDataSource = (appContext?.appData?.students?.filter(item=>{ return item.id === student.id }))
   const initialState = freshAttendance ? 'unmark' : (appDataSource?.length > 0 ? appDataSource[0]?.attendanceState : student.roll_state)
@@ -31,7 +32,7 @@ export const StudentListTile: React.FC<Props> = ({ isRollMode, student, freshAtt
   },[state])
 
   return (
-    <S.Container>
+    <S.Container style={{pointerEvents: editable ? 'all' : 'none'}}>
       <S.Avatar url={Images.avatar}></S.Avatar>
       <S.Content>
         <div>{PersonHelper.getFullName(student)}</div>
@@ -55,7 +56,6 @@ const S = {
     background-color: #fff;
     box-shadow: 0 2px 7px rgba(5, 66, 145, 0.13);
     transition: box-shadow 0.3s ease-in-out;
-
     &:hover {
       box-shadow: 0 2px 7px rgba(5, 66, 145, 0.26);
     }
