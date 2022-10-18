@@ -3,7 +3,6 @@ import Dialog from '@mui/material/Dialog';
 import Slide from '@mui/material/Slide';
 import { TransitionProps } from '@mui/material/transitions';
 import './index.css';
-import { AppCtx } from 'staff-app/app';
 import { StudentListTile } from 'staff-app/components/student-list-tile/student-list-tile.component';
 
 const Transition = React.forwardRef(function Transition(
@@ -15,12 +14,16 @@ const Transition = React.forwardRef(function Transition(
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export default function ActivityDetailsPopup({ data, setShowModal }) {
+export default function ActivityDetailsPopup({ data, setShowModalId }) {
   const [open, setOpen] = React.useState(true);
 
   const handleClose = () => {
+    // to remove the modal
     setOpen(false);
-    setShowModal(-1)
+    // edge-case - to open the previously closed modal again
+    setTimeout(()=>{
+      setShowModalId(-1)
+    })
   };
 
   return (
@@ -28,7 +31,6 @@ export default function ActivityDetailsPopup({ data, setShowModal }) {
       <Dialog
         open={open}
         TransitionComponent={Transition}
-        keepMounted
         onClose={handleClose}
         aria-describedby="alert-dialog-slide-description"
       >

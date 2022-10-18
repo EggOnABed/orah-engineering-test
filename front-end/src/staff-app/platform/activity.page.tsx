@@ -41,7 +41,7 @@ export const ActivityPage: React.FC = () => {
                 ]}
               />
               {
-                showModalId === item.entity.id ? <ActivityDetailsPopup data={item.entity.student_roll_states} setShowModal={setShowModalId}/> : null
+                showModalId === item.entity.id ? <ActivityDetailsPopup data={item.entity.student_roll_states} setShowModalId={setShowModalId}/> : null
               } 
             </S.ActivityList>
           })
