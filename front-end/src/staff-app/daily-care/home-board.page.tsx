@@ -43,7 +43,7 @@ export const HomeBoardPage: React.FC = () => {
   return (
     <>
       <S.PageContainer>
-        <Toolbar onItemClick={onToolbarAction} data={data} studentData={studentData!} getStudents={getStudents} setStudentData={setStudentData}/>
+        <Toolbar onItemClick={onToolbarAction} data={data!} studentData={studentData!} getStudents={getStudents} setStudentData={setStudentData}/>
 
         {loadState === "loading" && (
           <CenteredContainer>
@@ -56,6 +56,9 @@ export const HomeBoardPage: React.FC = () => {
             {studentData?.students.map((s) => (
               <StudentListTile key={s.id} isRollMode={isRollMode} student={s} />
             ))}
+            {
+              studentData?.students.length === 0 ? <S.NoStudentFound>No such student in class</S.NoStudentFound> : null
+            }
           </>
         )}
 
@@ -192,5 +195,12 @@ const S = {
     border: none;
     font-size: 13px;
     font-weight: 600;
+  `,
+  NoStudentFound: styled.span`
+    display: flex;
+    justify-content: center;
+    font-weight: 300;
+    font-size: 30px;
+    margin-top: 35vh;
   `
 }
