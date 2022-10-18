@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react"
+import React, { useState, useEffect } from "react"
 import styled from "styled-components"
 import Button from "@material-ui/core/ButtonBase"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
@@ -12,13 +12,11 @@ import { ActiveRollOverlay, ActiveRollAction } from "staff-app/components/active
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import BasicMenu from "elements/popup-menu/index"
-import { AppCtx } from "staff-app/app"
 
 export const HomeBoardPage: React.FC = () => {
   const [isRollMode, setIsRollMode] = useState(false)
   const [getStudents, data, loadState] = useApi<{ students: Person[] }>({ url: "get-homeboard-students" })
   const [studentData, setStudentData] = useState(data)
-  const appContextData = useContext(AppCtx);
 
   useEffect(() => {
     void getStudents()
@@ -92,12 +90,10 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
     setSearchFieldValue(value)
     // start filtering by names only if search length > 2
     if(value.length > 2){
-      debugger
       const dataSource = props.studentData.students.length > 0 ? props.studentData.students : props.data.students
       const students = dataSource.filter(student=>{
         return student.first_name.toLowerCase().includes(value.toLowerCase()) || student.last_name.toLowerCase().includes(value.toLowerCase())
       })
-      console.log(students)
       props.setStudentData({
         students: students, type: 'success'
       })
@@ -124,8 +120,10 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
       })
       // Change arrow direction to opposite of the currentlt sorted direction
       setSortingDirection(!sortingDirectionAscending)
-      // update data & re-render HomeBoardPage component to reflect the sorted changes in the DOM
-      props.getStudents({'dataSortedByUser': true, data : props.data})
+      // update studentData & re-render HomeBoardPage component to reflect the sorted changes in the DOM
+      props.setStudentData({
+        students: props.data.students, type: 'success'
+      })
     }
     // user click anywhere outside the menu to close the popup
     else if(targetElement === 'closePopup'){

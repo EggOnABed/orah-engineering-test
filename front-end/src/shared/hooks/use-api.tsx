@@ -16,7 +16,6 @@ export function useApi<ReturnType = {}>({ url, initialLoadState = "loading" }: O
   const callApi = useCallback(
     async (params?: any) => {
       dispatch({ type: "loading" })
-      debugger
       function process(result: ApiResponse<ReturnType>) {
         if (result.success) {
           dispatch({ type: "success", result: result })
@@ -24,20 +23,15 @@ export function useApi<ReturnType = {}>({ url, initialLoadState = "loading" }: O
           dispatch({ type: "error", error: result.error })
         }
       }
-      // if student's data is sorted by user then don't call mock-APIs, just update state
-      if(params && params.dataSortedByUser){
-        dispatch({ type: "success", result: params.data })
-      }
+      
       // on initial page-load call mock-APIs & return fresh data
-      else{
-        switch (url) {
-          case "get-homeboard-students":
-            return getHomeboardStudents().then(process)
-          case "get-activities":
-            return getActivities().then(process)
-          case "save-roll":
-            return saveActiveRoll(params as RollInput).then(process)
-        }
+      switch (url) {
+        case "get-homeboard-students":
+          return getHomeboardStudents().then(process)
+        case "get-activities":
+          return getActivities().then(process)
+        case "save-roll":
+          return saveActiveRoll(params as RollInput).then(process)
       }
     },
     [url]
