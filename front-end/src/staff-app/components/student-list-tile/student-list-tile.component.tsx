@@ -12,9 +12,11 @@ interface Props {
   student: Person
 }
 export const StudentListTile: React.FC<Props> = ({ isRollMode, student }) => {
-  const [state, setState] = useState('unmarked');
   const appContext = useContext(AppCtx)
-
+  const [state, setState] = useState((appContext?.appData.students?.filter(item=>{ return item.id === student.id }))[0]?.attendanceState);
+  
+  console.log((appContext?.appData.students?.filter(item=>{ return item.id === student.id })))
+  
   useEffect(()=>{
     const updatedStudentList = appContext?.appData.students?.map(obj=>{
       if(obj.id === student.id){
@@ -36,7 +38,7 @@ export const StudentListTile: React.FC<Props> = ({ isRollMode, student }) => {
       </S.Content>
       {isRollMode && (
         <S.Roll>
-          <RollStateSwitcher onStateChange={setState} />
+          <RollStateSwitcher initialState={state} onStateChange={setState} />
         </S.Roll>
       )}
     </S.Container>

@@ -28,7 +28,7 @@ export const HomeBoardPage: React.FC = () => {
     setStudentData(data)
     appContext?.updateAppData({ students : data?.students.map(student=>{
       return {
-        ...student, attendanceState: 'unmarked'
+        ...student, attendanceState: 'unmark'
       }
     })})
   },[data])
