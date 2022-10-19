@@ -125,6 +125,9 @@ interface ToolbarProps {
   setLoader: Function
 }
 
+// React components re-render anytime the props object changes or the component's states or context changes
+// Using memoization we prevent re-rendering incase the props don't change (shallow-level)
+// It still would re-render if its states or context change
 const Toolbar: React.FC<ToolbarProps> = React.memo((props) => {
   // state for sorting popup visibility toggling
   const [showSortingPopup, setShowSortingPopup] = useState(null)
