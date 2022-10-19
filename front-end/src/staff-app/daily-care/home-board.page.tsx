@@ -13,6 +13,7 @@ import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import BasicMenu from "elements/popup-menu/index"
 import { AppCtx } from "staff-app/app"
+import _ from 'lodash'
 
 export const HomeBoardPage: React.FC = () => {
   const appContext = useContext(AppCtx)
@@ -143,7 +144,6 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
   function handleSearch(value: string){
     // for managing an ugly edge-case
     const backSpaceBtnPressed: boolean = value.length < searchFieldValue.length;
-    setSearchFieldValue(value)
     // start filtering by names only if search length > 2
     if(value.length > 2){
       const dataSource = backSpaceBtnPressed ? props.data.students : (props.studentData.students.length ? props.studentData.students : props.data.students)
@@ -193,8 +193,11 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
     handleMenuPopup(e.currentTarget)
   }
 
+  // debounce search handler by 1 second
   function searchHandler(e: any){
-    handleSearch(e.target.value)
+    setSearchFieldValue(e.target.value);
+
+    (_.debounce(()=>handleSearch(e.target.value),1000))()
   }
 
   function onItemClickHandler(){
