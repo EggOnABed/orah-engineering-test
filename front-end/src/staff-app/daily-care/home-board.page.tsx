@@ -107,7 +107,7 @@ export const HomeBoardPage: React.FC = () => {
         )}
       </S.PageContainer>
       {/* footer component for attendance mgmt */}
-      <ActiveRollOverlay isActive={isRollMode} onItemClick={onActiveRollAction} setStudentData={setStudentData}/>
+      <ActiveRollOverlay isActive={isRollMode} setFreshAttendance={setFreshAttendance} onItemClick={onActiveRollAction} setStudentData={setStudentData}/>
     </>
   )
 }
@@ -189,10 +189,22 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
     else setShowSortingPopup(targetElement)
   }
 
+  function onMouseEnterHandler(e: React.MouseEvent<any>){
+    handleMenuPopup(e.currentTarget)
+  }
+
+  function searchHandler(e: any){
+    handleSearch(e.target.value)
+  }
+
+  function onItemClickHandler(){
+    onItemClick("roll")
+  }
+
   return (
     <S.ToolbarContainer onClick={(e: React.MouseEvent<any>) => handleMenuPopup('closePopup')}>
       <S.Name>
-        <div onMouseEnter={(e: React.MouseEvent<any>) => handleMenuPopup(e.currentTarget)}>
+        <div onMouseEnter={onMouseEnterHandler}>
           {
             sortingDirectionAscending ? <ArrowDownwardIcon/> :  <ArrowUpwardIcon/>
           }
@@ -201,10 +213,10 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
         {
           !!showSortingPopup ? <BasicMenu el={showSortingPopup} handleMenuPopup={handleMenuPopup}/> : null
         }
-        <S.NameSpan >Name</S.NameSpan>
+        <S.NameSpan>Name</S.NameSpan>
       </S.Name>
-      <div><S.Input placeholder="Search" value={searchFieldValue} onChange={(e)=>{handleSearch(e.target.value)}}/></div>
-      <S.Button onClick={() => onItemClick("roll")}>Start Roll</S.Button>
+      <div><S.Input placeholder="Search" value={searchFieldValue} onChange={searchHandler}/></div>
+      <S.Button onClick={onItemClickHandler}>Start Roll</S.Button>
     </S.ToolbarContainer>
   )
 }

@@ -9,7 +9,8 @@ export type ActiveRollAction = "filter" | "exit"
 interface Props {
   isActive: boolean
   onItemClick: (action: ActiveRollAction, value?: string) => void,
-  setStudentData: Function
+  setStudentData: Function,
+  setFreshAttendance: Function
 }
 
 export const ActiveRollOverlay: React.FC<Props> = (props) => {
@@ -41,6 +42,7 @@ export const ActiveRollOverlay: React.FC<Props> = (props) => {
 
   // if user clicks on any roll-state icons in footer to filter results by that roll-state
   useEffect(()=>{
+    props.setFreshAttendance(false)
     props?.setStudentData({ students: filterDataBy === 'all' ? appContext?.appData.students : appContext?.appData.students?.filter((student:any)=>{
         if(student.attendanceState === filterDataBy){
           return student
@@ -48,6 +50,14 @@ export const ActiveRollOverlay: React.FC<Props> = (props) => {
       }) 
     })
   },[filterDataBy])
+
+  function filterHandler(){
+    onItemClick("filter")
+  }
+
+  function exitHandler(){
+    onItemClick("exit")
+  }
 
   return (
     <S.Overlay isActive={isActive}>
@@ -64,10 +74,10 @@ export const ActiveRollOverlay: React.FC<Props> = (props) => {
             onItemClick={setFilterDataBy}
           />
           <div style={{ marginTop: Spacing.u6 }}>
-            <Button color="inherit" onClick={() => onItemClick("exit")}>
+            <Button color="inherit" onClick={exitHandler}>
               Exit
             </Button>
-            <Button color="inherit" style={{ marginLeft: Spacing.u2 }} onClick={() => onItemClick("filter")}>
+            <Button color="inherit" style={{ marginLeft: Spacing.u2 }} onClick={filterHandler}>
               Complete
             </Button>
           </div>

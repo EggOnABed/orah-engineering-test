@@ -29,7 +29,7 @@ export const ActivityPage: React.FC = () => {
 
   // logic to count no. of 'present', 'late' & 'absent' students
   function reducer(source:any, reduceBy:string){
-    return source.reduce((total:any,current:any)=>{ return total + (current.roll_state === reduceBy ? 1 : 0) },0)
+    return !!source ? source.reduce((total:any,current:any)=>{ return total + (current.roll_state === reduceBy ? 1 : 0) },0) : null
   }
 
   return <S.Container>
@@ -49,7 +49,7 @@ export const ActivityPage: React.FC = () => {
                 <S.Time>{ moment(item.date).format('LLL') }</S.Time>
                 <RollStateList
                   stateList={[
-                    { type: "all", count : item.entity.student_roll_states.length },
+                    { type: "all", count : item.entity?.student_roll_states?.length },
                     { type: "present", count: reducer(item.entity.student_roll_states, 'present') },
                     { type: "late", count: reducer(item.entity.student_roll_states, 'late') },
                     { type: "absent", count: reducer(item.entity.student_roll_states, 'absent') },
