@@ -197,6 +197,7 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
   }
 
   // debounce search handler by 0.5 seconds
+  // if user types in the 500ms window, handleSearch won't run. It will run after that window
   function searchHandler(e: any){
     setSearchFieldValue(e.target.value);
     props.setLoader('loading');
