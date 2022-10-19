@@ -27,6 +27,7 @@ export const HomeBoardPage: React.FC = () => {
   const [getStudents, data, loadState] = useApi<{ students: Person[] }>({ url: "get-homeboard-students" })
   // state to manage filtering of student data from search bar w/o changing the unfiltered 'data' from inital API   
   const [studentData, setStudentData] = useState(data)
+  const [loader, setLoader] = useState('loaded')
 
   // on initial page-load, call mock-API & fetch student data
   useEffect(() => {
@@ -82,15 +83,15 @@ export const HomeBoardPage: React.FC = () => {
   return (
     <>
       <S.PageContainer>
-        <Toolbar onItemClick={onToolbarAction} data={data!} studentData={studentData!} getStudents={getStudents} setStudentData={setStudentData}/>
+        <Toolbar setLoader={setLoader} onItemClick={onToolbarAction} data={data!} studentData={studentData!} getStudents={getStudents} setStudentData={setStudentData}/>
 
-        {loadState === "loading" && (
+        {loadState === "loading" || loader === 'loading' && (
           <CenteredContainer>
             <FontAwesomeIcon icon="spinner" size="2x" spin />
           </CenteredContainer>
         )}
 
-        {loadState === "loaded" && data?.students && (
+        {loadState === "loaded" && loader === 'loaded' && data?.students && (
           <>
             {studentData?.students.map((s) => (
               <StudentListTile key={s.id} isRollMode={isRollMode} editable={true} student={s} freshAttendance={freshAttendance}/>
@@ -120,7 +121,8 @@ interface ToolbarProps {
   studentData: { students: Person[]; },
   data: { students: Person[]; },
   getStudents: Function,
-  setStudentData: Function
+  setStudentData: Function,
+  setLoader: Function
 }
 
 const Toolbar: React.FC<ToolbarProps> = (props) => {
@@ -159,6 +161,7 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
         students: props.data.students, type: 'success'
       })
     }
+    props.setLoader('loaded')
   }
 
   // runs when user interacts with sorting functionality in myriad of ways
@@ -193,11 +196,11 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
     handleMenuPopup(e.currentTarget)
   }
 
-  // debounce search handler by 1 second
+  // debounce search handler by 0.5 seconds
   function searchHandler(e: any){
     setSearchFieldValue(e.target.value);
-
-    (_.debounce(()=>handleSearch(e.target.value),1000))()
+    props.setLoader('loading');
+    (_.debounce(()=>handleSearch(e.target.value),500))()
   }
 
   function onItemClickHandler(){
