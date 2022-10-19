@@ -16,6 +16,7 @@ import { AppCtx } from "staff-app/app"
 import _ from 'lodash'
 
 export const HomeBoardPage: React.FC = () => {
+  const [loader, setLoader] = useState('loaded')
   const appContext = useContext(AppCtx)
   // state to manage attendance view
   const [isRollMode, setIsRollMode] = useState(false)
@@ -27,8 +28,7 @@ export const HomeBoardPage: React.FC = () => {
   const [getStudents, data, loadState] = useApi<{ students: Person[] }>({ url: "get-homeboard-students" })
   // state to manage filtering of student data from search bar w/o changing the unfiltered 'data' from inital API   
   const [studentData, setStudentData] = useState(data)
-  const [loader, setLoader] = useState('loaded')
-
+  
   // on initial page-load, call mock-API & fetch student data
   useEffect(() => {
     void getStudents()
@@ -85,7 +85,7 @@ export const HomeBoardPage: React.FC = () => {
       <S.PageContainer>
         <Toolbar setLoader={setLoader} onItemClick={onToolbarAction} data={data!} studentData={studentData!} getStudents={getStudents} setStudentData={setStudentData}/>
 
-        {loadState === "loading" || loader === 'loading' && (
+        { (loadState === "loading" || loader === "loading") && (
           <CenteredContainer>
             <FontAwesomeIcon icon="spinner" size="2x" spin />
           </CenteredContainer>
@@ -125,7 +125,7 @@ interface ToolbarProps {
   setLoader: Function
 }
 
-const Toolbar: React.FC<ToolbarProps> = (props) => {
+const Toolbar: React.FC<ToolbarProps> = React.memo((props) => {
   // state for sorting popup visibility toggling
   const [showSortingPopup, setShowSortingPopup] = useState(null)
   // state to toggle sorting direction on user-click events
@@ -226,7 +226,7 @@ const Toolbar: React.FC<ToolbarProps> = (props) => {
       <S.Button onClick={onItemClickHandler}>Start Roll</S.Button>
     </S.ToolbarContainer>
   )
-}
+})
 
 const S = {
   PageContainer: styled.div`

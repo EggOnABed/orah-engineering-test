@@ -13,7 +13,7 @@ interface Props {
   freshAttendance: boolean,
   editable: boolean
 }
-export const StudentListTile: React.FC<Props> = ({ editable = true, isRollMode, student, freshAttendance = false }) => {
+export const StudentListTile: React.FC<Props> = React.memo(({ editable = true, isRollMode, student, freshAttendance = false }) => {
   const appContext = useContext(AppCtx)
   const appDataSource = (appContext?.appData?.students?.filter(item=>{ return item.id === student.id }))
   const initialState = freshAttendance ? 'unmark' : (appDataSource?.length > 0 ? appDataSource[0]?.attendanceState : student.roll_state)
@@ -44,7 +44,7 @@ export const StudentListTile: React.FC<Props> = ({ editable = true, isRollMode, 
       )}
     </S.Container>
   )
-}
+})
 
 const S = {
   Container: styled.div`

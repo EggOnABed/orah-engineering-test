@@ -13,7 +13,7 @@ interface Props {
   setFreshAttendance: Function
 }
 
-export const ActiveRollOverlay: React.FC<Props> = (props) => {
+export const ActiveRollOverlay: React.FC<Props> = React.memo((props) => {
   const appContext = useContext(AppCtx)
   const { isActive, onItemClick } = props
 
@@ -85,7 +85,7 @@ export const ActiveRollOverlay: React.FC<Props> = (props) => {
       </S.Content>
     </S.Overlay>
   )
-}
+})
 
 const S = {
   Overlay: styled.div<{ isActive: boolean }>`

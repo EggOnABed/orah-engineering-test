@@ -10,14 +10,14 @@ interface Props {
   size?: number
   onClick?: () => void
 }
-export const RollStateIcon: React.FC<Props> = (props) => {
+export const RollStateIcon: React.FC<Props> = React.memo((props) => {
   const { type, size = 20, onClick } = props
   return (
     <S.Icon size={size} border={type === "unmark"} bgColor={getBgColor(type)} clickable={Boolean(onClick)} onClick={onClick}>
       <FontAwesomeIcon icon="check" size={size > 14 ? "lg" : "sm"} />
     </S.Icon>
   )
-}
+})
 
 function getBgColor(type: RolllStateType) {
   switch (type) {

@@ -16,7 +16,7 @@ export const Header: React.FC = () => {
   )
 }
 
-const NavItem: React.FC<{ to: string }> = (props) => {
+const NavItem: React.FC<{ to: string }> = React.memo((props) => {
   const activeStyle = ({ isActive }: { isActive: boolean }) => ({
     textDecoration: "none",
     fontWeight: FontWeight.strong,
@@ -29,7 +29,7 @@ const NavItem: React.FC<{ to: string }> = (props) => {
       {props.children}
     </NavLink>
   )
-}
+})
 
 const S = {
   Header: styled.header`
